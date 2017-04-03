@@ -1,0 +1,37 @@
+[
+    {
+        "name": "imgix/imgix-php",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/imgix/imgix-php.git",
+            "reference": "6caef36aec0a80ba5c79d1cc2859c703f12d1494"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/imgix/imgix-php/zipball/6caef36aec0a80ba5c79d1cc2859c703f12d1494",
+            "reference": "6caef36aec0a80ba5c79d1cc2859c703f12d1494",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2016-02-25 19:46:23",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Imgix\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "A PHP client library for generating URLs with imgix.",
+        "keywords": [
+            "imgix"
+        ]
+    }
+]

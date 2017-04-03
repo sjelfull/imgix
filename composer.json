@@ -1,0 +1,5 @@
+{
+    "require": {
+        "imgix/imgix-php": "^1.1"
+    }
+}
