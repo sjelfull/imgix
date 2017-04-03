@@ -17,19 +17,6 @@ use Imgix\UrlBuilder;
 
 class ImgixModel extends BaseModel
 {
-    // translate dictionary for translating crafts built in position constants into relative format (width/height offset)
-    public static $craftPositonTranslate = array(
-        'top-left'      => '0% 0%',
-        'top-center'    => '50% 0%',
-        'top-right'     => '100% 0%',
-        'center-left'   => '0% 50%',
-        'center-center' => '50% 50%',
-        'center-right'  => '100% 50%',
-        'bottom-left'   => '0% 100%',
-        'bottom-center' => '50% 100%',
-        'bottom-right'  => '100% 100%'
-    );
-
     protected $supportedAttributes = [
         'bri',
         'con',
