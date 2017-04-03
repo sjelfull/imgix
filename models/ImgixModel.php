@@ -124,7 +124,8 @@ class ImgixModel extends BaseModel
         'markw',
         'markx',
         'marky'
-    ],
+    ];
+
     protected $attributesTranslate = array(
         'width'      => 'w',
         'height'     => 'h',
@@ -133,6 +134,7 @@ class ImgixModel extends BaseModel
         'min-height' => 'min-h',
         'max-width'  => 'min-w',
     );
+    protected $transforms;
     protected $imagePath;
     protected $builder;
 
@@ -154,37 +156,63 @@ class ImgixModel extends BaseModel
             $domain       = array_key_exists($sourceHandle, $domains) ? $domains[ $sourceHandle ] : null;
 
             $this->builder = new UrlBuilder($domain);
-            $this->builder->setUseHttps();
-            $this->imagePath = $image->uri;
+            $this->builder->setUseHttps(true);
+            $this->imagePath  = $image->path;
+            $this->transforms = $transforms;
 
             $this->transform($transforms);
         }
         elseif ( gettype($image) === 'string' ) {
-            $domains         = craft()->imgix->getSetting('imgixDomains');
-            $firstHandle     = array_keys($domains);
-            $domain          = $domains[ $firstHandle ];
-            $this->builder   = new UrlBuilder($domain);
-            $this->imagePath = $image;
+            $domains          = craft()->imgix->getSetting('imgixDomains');
+            $firstHandle      = array_keys($domains);
+            $domain           = $domains[ $firstHandle ];
+            $this->builder    = new UrlBuilder($domain);
+            $this->imagePath  = $image;
+            $this->transforms = $transforms;
+
+            $this->transform($transforms);
         }
         else {
             throw new Exception(Craft::t('An unknown image object was used.'));
         }
     }
 
-    public function img ($attributes = [ ])
+    public function img ($attributes = null)
     {
-        if ( $urls = $this->getAttribute('transformed') ) {
-            if ( !is_array($urls) ) {
-                return '<img src="' . $urls . '" />';
+        if ( $image = $this->getAttribute('transformed') ) {
+            if ( $image && isset($image['url']) ) {
+                $tagAttributes = $this->getTagAttributes($attributes);
+
+                return TemplateHelper::getRaw('<img src="' . $image['url'] . '" ' . $tagAttributes . ' />');
             }
         }
 
         return null;
     }
 
-    public function srcset ()
+    public function srcset ($attributes)
     {
+        if ( $images = $this->getAttribute('transformed') ) {
+            $widths = [ ];
+            $result = '';
 
+            foreach ($images as $image) {
+                $keys  = array_keys($image);
+                $width = $image['width'] ?? $image['w'] ?? null;
+
+                if ( $width && !isset($widths[ $width ]) ) {
+                    $withs[ $width ] = true;
+                    $result .= $image['url'] . ' ' . $width . 'w, ';
+                }
+            }
+
+            $srcset        = substr($result, 0, strlen($result) - 2);
+            $tagAttributes = $this->getTagAttributes($attributes);
+
+            return TemplateHelper::getRaw('<img src="' . $images[0]['url'] . '" srcset="' . $srcset . '" ' . $tagAttributes . ' />');
+        }
+
+        return null;
     }
 
     protected function transform ($transforms)
@@ -197,13 +225,14 @@ class ImgixModel extends BaseModel
             $images = [ ];
             foreach ($transforms as $transform) {
                 $url      = $this->buildTransform($this->imagePath, $transform);
-                $images[] = $url;
+                $images[] = array_merge($transform, [ 'url' => $url ]);
             }
             $this->setAttribute('transformed', $images);
         }
         else {
-            $url = $this->buildTransform($this->imagePath, $transforms);
-            $this->setAttribute('transformed', $url);
+            $url   = $this->buildTransform($this->imagePath, $transforms);
+            $image = array_merge($transforms, [ 'url' => $url ]);
+            $this->setAttribute('transformed', $image);
         }
     }
 
@@ -237,6 +266,21 @@ class ImgixModel extends BaseModel
         }
 
         return $translatedAttributes;
+    }
+
+    private function getTagAttributes ($attributes)
+    {
+        if ( !$attributes ) {
+            return '';
+        }
+
+        $tagAttributes = '';
+
+        foreach ($attributes as $key => $attribute) {
+            $tagAttributes .= ' ' . $key . '="' . $attribute . '"';
+        }
+
+        return $tagAttributes;
     }
 
 }

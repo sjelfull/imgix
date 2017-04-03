@@ -15,9 +15,7 @@ namespace Craft;
 
 class ImgixVariable
 {
-    /**
-     */
-    public function transformImage($asset = null, $transforms = [], $defaultOptions = [])
+    public function transformImage($asset = null, $transforms = null, $defaultOptions = [])
     {
         return craft()->imgix->transformImage($asset, $transforms, $defaultOptions);
     }
