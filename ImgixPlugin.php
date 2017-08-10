@@ -44,7 +44,7 @@ class ImgixPlugin extends BasePlugin
      */
     public function getDocumentationUrl ()
     {
-        return 'https://github.com/sjelfull/Imgix/blob/master/README.md';
+        return 'https://superbig.co/plugins/imgix';
     }
 
     /**
@@ -52,7 +52,7 @@ class ImgixPlugin extends BasePlugin
      */
     public function getReleaseFeedUrl ()
     {
-        return 'https://raw.githubusercontent.com/sjelfull/Imgix/master/releases.json';
+        return 'https://superbig.co/plugins/imgix/feed';
     }
 
     /**
@@ -60,7 +60,7 @@ class ImgixPlugin extends BasePlugin
      */
     public function getVersion ()
     {
-        return '1.0.0';
+        return '1.0.1';
     }
 
     /**
