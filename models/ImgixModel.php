@@ -149,7 +149,7 @@ class ImgixModel extends BaseModel
     {
         parent::__construct();
 
-        if ( get_class($image) == 'Craft\AssetFileModel' ) {
+        if ( get_class($image) == 'Craft\AssetFileModel' or get_class($image) == 'Craft\FocusPoint_AssetFileModel' ) {
             $source       = $image->source;
             $sourceHandle = $source->handle;
             $domains      = craft()->imgix->getSetting('imgixDomains');
