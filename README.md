@@ -45,11 +45,41 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 {# Image tag #}
 {{ firstImage.img() }}
 
+{# Get url for the first image #}
+{{ firstImage.url }} or {{ firstImage.getUrl() }}
+
 {# Image tag w/ srcset + tag attributes #}
 {{ secondImage.srcset({ width: 700 }) }}
 
 {# See transformed results #}
 {{ dump(secondImage.transformed) }}
+```
+
+To use with Element API, you can call the service directly:
+
+```php
+<?php
+namespace Craft;
+
+return [
+    'endpoints' => [
+        'news.json' => [
+            'elementType' => ElementType::Entry,
+            'criteria' => ['section' => 'news'],
+            'transformer' => function(EntryModel $entry) {
+                $asset = $entry->featuredImage->first();
+                $featuredImage = craft()->imgix->transformImage( $asset, [ 'width' => 400, 'height' => 350 ]);
+                return [
+                    'title' => $entry->title,
+                    'url' => $entry->url,
+                    'jsonUrl' => UrlHelper::getUrl("news/{$entry->id}.json"),
+                    'summary' => $entry->summary,
+                    'featuredImage' => $featuredImage,
+                ];
+            },
+        ],
+    ]
+];
 ```
 
 ## Imgix Roadmap
