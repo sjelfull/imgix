@@ -46,7 +46,7 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 {{ firstImage.img() }}
 
 {# Get url for the first image #}
-{{ firstImage.url }} or {{ firstImage.getUrl() }}
+{{ firstImage.getUrl() }}
 
 {# Image tag w/ srcset + tag attributes #}
 {{ secondImage.srcset({ width: 700 }) }}
