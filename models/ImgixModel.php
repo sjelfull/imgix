@@ -190,6 +190,17 @@ class ImgixModel extends BaseModel
         return null;
     }
 
+    public function getUrl ()
+    {
+        if ( $image = $this->getAttribute('transformed') ) {
+            if ( $image && isset($image['url']) ) {
+                return $image['url'];
+            }
+        }
+
+        return null;
+    }
+
     public function srcset ($attributes)
     {
         if ( $images = $this->getAttribute('transformed') ) {
