@@ -41,6 +41,7 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 
 {% set firstImage = craft.imgix.transformImage( asset, { width: 400, height: 350 }) %}
 {% set secondImage = craft.imgix.transformImage( asset, transforms) %}
+{% set thirdImage = craft.imgix.transformImage( asset, { width: 1920, ratio: 16/9}) %}
 
 {# Image tag #}
 {{ firstImage.img() }}
