@@ -296,7 +296,7 @@ class ImgixModel extends BaseModel
         return $tagAttributes;
     }
 
-    protected function calculateTargetSizeFromRatio($transform) // , $sourceWidth, $sourceHeight)
+    protected function calculateTargetSizeFromRatio($transform)
     {
         if ( ! isset($transform['ratio'])) {
             return $transform;
@@ -321,7 +321,6 @@ class ImgixModel extends BaseModel
             }
         }
         unset($transform['ratio']); // remove the ratio setting so that it doesn't gets processed in the URL
-        $transform['fit'] = 'crop'; // TODO: should we really do this? ratio doesn't make much sense without crop
 
         return $transform;
     }
