@@ -235,12 +235,14 @@ class ImgixModel extends BaseModel
         if ( isset($transforms[0]) ) {
             $images = [ ];
             foreach ($transforms as $transform) {
+                $transform = $this->calculateTargetSizeFromRatio($transform);
                 $url      = $this->buildTransform($this->imagePath, $transform);
                 $images[] = array_merge($transform, [ 'url' => $url ]);
             }
             $this->setAttribute('transformed', $images);
         }
         else {
+            $transforms = $this->calculateTargetSizeFromRatio($transforms);
             $url   = $this->buildTransform($this->imagePath, $transforms);
             $image = array_merge($transforms, [ 'url' => $url ]);
             $this->setAttribute('transformed', $image);
@@ -294,4 +296,32 @@ class ImgixModel extends BaseModel
         return $tagAttributes;
     }
 
+    protected function calculateTargetSizeFromRatio($transform)
+    {
+        if ( ! isset($transform['ratio'])) {
+            return $transform;
+        }
+        $ratio = (float)$transform['ratio'];
+
+        $w = isset($transform['w']) ? $transform['w'] : null;
+        $h = isset($transform['h']) ? $transform['h'] : null;
+
+        // If both sizes and ratio is specified, let ratio take control based on width
+        if ($w and $h) {
+            $transform['h'] = round($w / $ratio);
+        } else {
+            if ($w) {
+                $transform['h'] = round($w / $ratio);
+            } elseif ($h) {
+                $transform['w'] = round($h * $ratio);
+            } else {
+                // TODO: log that neither w nor h is specified with ratio
+                // no idea what to do, return
+                return $transform;
+            }
+        }
+        unset($transform['ratio']); // remove the ratio setting so that it doesn't gets processed in the URL
+
+        return $transform;
+    }
 }
