@@ -39,9 +39,14 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
     },
 ] %}
 
+{% set defaultOptions = {
+    sharp: 10
+} %}
+
 {% set firstImage = craft.imgix.transformImage( asset, { width: 400, height: 350 }) %}
 {% set secondImage = craft.imgix.transformImage( asset, transforms) %}
 {% set thirdImage = craft.imgix.transformImage( asset, { width: 1920, ratio: 16/9}) %}
+{% set fourthImage = craft.imgix.transformImage( asset, transforms, defaultOptions) }
 
 {# Image tag #}
 {{ firstImage.img() }}
@@ -51,6 +56,9 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 
 {# Image tag w/ srcset + tag attributes #}
 {{ secondImage.srcset({ width: 700 }) }}
+
+{# Image tag w/ srcset + default options for each transform #}
+{{ fourthImage.srcset( {} ) }}
 
 {# See transformed results #}
 {{ dump(secondImage.transformed) }}
