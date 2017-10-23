@@ -36,7 +36,7 @@ class ImgixService extends BaseApplicationComponent
             return null;
         }
 
-        $pathsModel = new ImgixModel($asset, $transforms);
+        $pathsModel = new ImgixModel($asset, $transforms, $defaultOptions);
 
         return $pathsModel;
     }
