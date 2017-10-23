@@ -150,8 +150,7 @@ class ImgixModel extends BaseModel
     {
         parent::__construct();
 
-        $this->lazyLoadPrefix  = craft()->imgix->getSetting('lazyLoadPrefix') ? craft()->imgix->getSetting('lazyLoadPrefix') : 'data-';
-
+        $this->lazyLoadPrefix = craft()->imgix->getSetting('lazyLoadPrefix') ?: 'data-';
         if ( get_class($image) == 'Craft\AssetFileModel' or get_class($image) == 'Craft\FocusPoint_AssetFileModel' ) {
             $source       = $image->source;
             $sourceHandle = $source->handle;
@@ -202,7 +201,6 @@ class ImgixModel extends BaseModel
     {
         if ( $image = $this->getAttribute('transformed') ) {
             if ( $image && isset($image['url']) ) {
-                print '<pre>'; var_dump($image); die();
                 return $image['url'];
             }
         }
