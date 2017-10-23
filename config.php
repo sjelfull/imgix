@@ -3,6 +3,7 @@
 return [
     'imgixDomains' => [
         // Example:
-        // 'assetSourceHandle' => 'assetSourceHandle.imgix.net'
+        // 'assetSourceHandle' => 'assetSourceHandle.imgix.net',
+        // 'lazyLoadPrefix' => 'data-'
     ]
 ];
