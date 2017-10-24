@@ -47,7 +47,6 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 {% set secondImage = craft.imgix.transformImage( asset, transforms) %}
 {% set thirdImage = craft.imgix.transformImage( asset, { width: 1920, ratio: 16/9}) %}
 {% set fourthImage = craft.imgix.transformImage( asset, transforms, defaultOptions) }
-{% set fifthImage = craft.imgix.transformImage( asset, { lazyLoad: true}) %}
 
 {# Image tag #}
 {{ firstImage.img() }}
@@ -60,6 +59,12 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 
 {# Image tag w/ srcset + default options for each transform #}
 {{ fourthImage.srcset( {} ) }}
+
+{# Image tag w/ lazyload #}
+{{ firstImage.img({ lazyLoad: true }) }}
+
+{# Image tag w/ srcset + lazyLoad #}
+{{ secondImage.srcset({ lazyLoad: true }) }}
 
 {# See transformed results #}
 {{ dump(secondImage.transformed) }}
