@@ -138,6 +138,7 @@ class ImgixModel extends BaseModel
     protected $imagePath;
     protected $builder;
     protected $defaultOptions;
+    protected $lazyLoadPrefix;
 
     /**
      * Constructor
@@ -150,6 +151,7 @@ class ImgixModel extends BaseModel
     {
         parent::__construct();
 
+        $this->lazyLoadPrefix = craft()->imgix->getSetting('lazyLoadPrefix') ?: 'data-';
         if ( get_class($image) == 'Craft\AssetFileModel' or get_class($image) == 'Craft\FocusPoint_AssetFileModel' ) {
             $source       = $image->source;
             $sourceHandle = $source->handle;
@@ -184,9 +186,14 @@ class ImgixModel extends BaseModel
     {
         if ( $image = $this->getAttribute('transformed') ) {
             if ( $image && isset($image['url']) ) {
+                $lazyLoad = false;
+                if ( isset($attributes['lazyLoad']) ) {
+                    $lazyLoad = true;
+                    unset($attributes['lazyLoad']); // unset to remove it from the html output
+                }
                 $tagAttributes = $this->getTagAttributes($attributes);
 
-                return TemplateHelper::getRaw('<img src="' . $image['url'] . '" ' . $tagAttributes . ' />');
+                return TemplateHelper::getRaw('<img '. ( $lazyLoad ? $this->lazyLoadPrefix : '' )  .'src="' . $image['url'] . '" ' . $tagAttributes . ' />');
             }
         }
 
@@ -221,9 +228,14 @@ class ImgixModel extends BaseModel
             }
 
             $srcset        = substr($result, 0, strlen($result) - 2);
+            $lazyLoad = false;
+            if ( isset($attributes['lazyLoad']) ) {
+                $lazyLoad = true;
+                unset($attributes['lazyLoad']); // unset to remove it from the html output
+            }
             $tagAttributes = $this->getTagAttributes($attributes);
 
-            return TemplateHelper::getRaw('<img src="' . $images[0]['url'] . '" srcset="' . $srcset . '" ' . $tagAttributes . ' />');
+            return TemplateHelper::getRaw('<img '. ( $lazyLoad ? $this->lazyLoadPrefix : '' ) .'src="' . $images[0]['url'] . '" '. ( $lazyLoad ? $this->lazyLoadPrefix : '' ) .'srcset="' . $srcset . '" ' . $tagAttributes . ' />');
         }
 
         return null;

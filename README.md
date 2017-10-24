@@ -47,6 +47,7 @@ This plugin will lookup the Asset image's source handle, and figure out which Im
 {% set secondImage = craft.imgix.transformImage( asset, transforms) %}
 {% set thirdImage = craft.imgix.transformImage( asset, { width: 1920, ratio: 16/9}) %}
 {% set fourthImage = craft.imgix.transformImage( asset, transforms, defaultOptions) }
+{% set fifthImage = craft.imgix.transformImage( asset, { lazyLoad: true}) %}
 
 {# Image tag #}
 {{ firstImage.img() }}
@@ -90,6 +91,11 @@ return [
     ]
 ];
 ```
+## Lazy loading
+
+To replace `src` and `srcset` with `data-src` and `data-srcset` for lazy loading, add the `lazyLoad` attribute to to `transformImage()`.
+
+If you need to prefix with something other than `data-`, you can set the configuration value `lazyLoadPrefix` in `craft/config/imgix.php`.
 
 ## Imgix Roadmap
 
