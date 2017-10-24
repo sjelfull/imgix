@@ -137,6 +137,7 @@ class ImgixModel extends BaseModel
     protected $transforms;
     protected $imagePath;
     protected $builder;
+    protected $defaultOptions;
     protected $lazyLoadPrefix;
 
     /**
@@ -161,6 +162,7 @@ class ImgixModel extends BaseModel
             $this->builder->setUseHttps(true);
             $this->imagePath  = $image->path;
             $this->transforms = $transforms;
+            $this->defaultOptions = $defaultOptions;
 
             $this->transform($transforms);
         }
@@ -171,6 +173,7 @@ class ImgixModel extends BaseModel
             $this->builder    = new UrlBuilder($domain);
             $this->imagePath  = $image;
             $this->transforms = $transforms;
+            $this->defaultOptions = $defaultOptions;
 
             $this->transform($transforms);
         }
@@ -247,6 +250,7 @@ class ImgixModel extends BaseModel
         if ( isset($transforms[0]) ) {
             $images = [ ];
             foreach ($transforms as $transform) {
+                $transform = array_merge($transform, $this->defaultOptions);
                 $transform = $this->calculateTargetSizeFromRatio($transform);
                 $url      = $this->buildTransform($this->imagePath, $transform);
                 $images[] = array_merge($transform, [ 'url' => $url ]);
@@ -254,6 +258,7 @@ class ImgixModel extends BaseModel
             $this->setAttribute('transformed', $images);
         }
         else {
+            $transforms = array_merge($transforms, $this->defaultOptions);
             $transforms = $this->calculateTargetSizeFromRatio($transforms);
             $url   = $this->buildTransform($this->imagePath, $transforms);
             $image = array_merge($transforms, [ 'url' => $url ]);
