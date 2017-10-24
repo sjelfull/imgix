@@ -188,7 +188,7 @@ class ImgixModel extends BaseModel
             if ( $image && isset($image['url']) ) {
                 $lazyLoad = false;
                 if ( isset($attributes['lazyLoad']) ) {
-                    $lazyLoad = true;
+                    $lazyLoad = $attributes['lazyLoad'];
                     unset($attributes['lazyLoad']); // unset to remove it from the html output
                 }
                 $tagAttributes = $this->getTagAttributes($attributes);
@@ -230,7 +230,7 @@ class ImgixModel extends BaseModel
             $srcset        = substr($result, 0, strlen($result) - 2);
             $lazyLoad = false;
             if ( isset($attributes['lazyLoad']) ) {
-                $lazyLoad = true;
+                $lazyLoad = $attributes['lazyLoad'];
                 unset($attributes['lazyLoad']); // unset to remove it from the html output
             }
             $tagAttributes = $this->getTagAttributes($attributes);
