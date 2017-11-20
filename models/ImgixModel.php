@@ -251,6 +251,7 @@ class ImgixModel extends BaseModel
             $images = [ ];
             foreach ($transforms as $transform) {
                 $transform = array_merge($transform, $this->defaultOptions);
+                $transform = $this->translateAttributes($transform);
                 $transform = $this->calculateTargetSizeFromRatio($transform);
                 $url      = $this->buildTransform($this->imagePath, $transform);
                 $images[] = array_merge($transform, [ 'url' => $url ]);
@@ -259,6 +260,7 @@ class ImgixModel extends BaseModel
         }
         else {
             $transforms = array_merge($transforms, $this->defaultOptions);
+            $transforms = $this->translateAttributes($transforms);
             $transforms = $this->calculateTargetSizeFromRatio($transforms);
             $url   = $this->buildTransform($this->imagePath, $transforms);
             $image = array_merge($transforms, [ 'url' => $url ]);
@@ -276,10 +278,8 @@ class ImgixModel extends BaseModel
         ));
     }
 
-    private function buildTransform ($filename, $transform)
+    private function buildTransform ($filename, $parameters)
     {
-        $parameters = $this->translateAttributes($transform);
-
         return $this->builder->createURL($filename, $parameters);
     }
 
