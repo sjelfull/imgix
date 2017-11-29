@@ -36,8 +36,6 @@ class ImgixService extends BaseApplicationComponent
 
     public function onDeleteAsset (AssetFileModel $asset)
     {
-        ImgixPlugin::log(Craft::t('Failed to purge {url}', [ 'url' => $this->getImgixUrl($asset) ]));
-
         craft()->tasks->createTask('Imgix_PurgeUrl', 'Purging images', [ 'urls' => [ $this->getImgixUrl($asset) ] ]);
     }
 
