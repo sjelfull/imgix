@@ -22,6 +22,8 @@ Then map your Asset Source handle to your Imgix domain, according to the example
 
 This plugin will lookup the Asset image's source handle, and figure out which Imgix domain to use. If a URL string is passed, it will use the first domain in the config file.
 
+To purge images automatically on deletion/save or manually, you have to add your API key to the config file.
+
 ## Using Imgix
 
 ```twig
