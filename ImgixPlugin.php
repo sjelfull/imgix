@@ -21,6 +21,22 @@ class ImgixPlugin extends BasePlugin
     public function init ()
     {
         require_once __DIR__ . '/vendor/autoload.php';
+
+        craft()->on('elements.onSaveElement', function (Event $event) {
+            $element = $event->params['element'];
+
+            if ( craft()->imgix->shouldUpdate($element) ) {
+                craft()->imgix->onSaveAsset($event->params['element']);
+            }
+        });
+
+        craft()->on('assets.onDeleteAsset', function (Event $event) {
+            $asset = $event->params['asset'];
+
+            if ( craft()->imgix->shouldUpdate($asset) ) {
+                craft()->imgix->onDeleteAsset($asset);
+            }
+        });
     }
 
     /**
@@ -85,5 +101,13 @@ class ImgixPlugin extends BasePlugin
     public function getDeveloperUrl ()
     {
         return 'https://superbig.co';
+    }
+
+    public function addAssetActions ()
+    {
+        $actions   = [];
+        $actions[] = 'Imgix_Purge';
+
+        return $actions;
     }
 }
