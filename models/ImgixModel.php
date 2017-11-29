@@ -211,7 +211,7 @@ class ImgixModel extends BaseModel
         return null;
     }
 
-    public function srcset ($attributes)
+    public function srcset ($attributes = [])
     {
         if ( $images = $this->getAttribute('transformed') ) {
             $widths = [ ];
