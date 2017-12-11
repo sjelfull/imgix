@@ -1,4 +1,7 @@
 {
+    "name": "sjelfull/imgix",
+    "type": "craft-plugin",
+    "description": "Use Imgix with Craft 2.x",
     "require": {
         "imgix/imgix-php": "^1.1"
     }
