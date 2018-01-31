@@ -22,10 +22,10 @@ class ImgixPlugin extends BasePlugin
     {
         require_once __DIR__ . '/vendor/autoload.php';
 
-        craft()->on('elements.onSaveElement', function (Event $event) {
+        craft()->on('elements.onBeforeSaveElement', function (Event $event) {
             $element = $event->params['element'];
 
-            if ( craft()->imgix->shouldUpdate($element) ) {
+            if ( !$event->params['isNewElement'] && craft()->imgix->shouldUpdate($element) ) {
                 craft()->imgix->onSaveAsset($event->params['element']);
             }
         });
