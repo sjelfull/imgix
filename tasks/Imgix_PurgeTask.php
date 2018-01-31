@@ -52,7 +52,7 @@ class Imgix_PurgeTask extends BaseTask
     {
         $asset = craft()->assets->getFileById($this->getSettings()->assetIds[ $step ]);
 
-        if ( $asset ) {
+        if ( $asset && craft()->imgix->shouldUpdate($asset) ) {
             craft()->imgix->purge($asset);
         }
 

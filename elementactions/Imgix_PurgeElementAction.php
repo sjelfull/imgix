@@ -28,6 +28,7 @@ class Imgix_PurgeElementAction extends BaseElementAction
     public function performAction (ElementCriteriaModel $criteria)
     {
         craft()->tasks->createTask('Imgix_Purge', 'Purging images', [ 'assetIds' => $criteria->ids() ]);
+        
         $this->setMessage(Craft::t('Purging images'));
 
         return true;
