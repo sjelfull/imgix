@@ -71,7 +71,7 @@ class ImgixService extends BaseApplicationComponent
         try {
             $client  = new Client();
             $request = $client->post('https://api.imgix.com/v2/image/purger', [], [
-                'url' => $url,
+                'url' => UrlHelper::stripQueryString($url),
             ], [
                 'timeout' => 15,
             ]);
