@@ -20,7 +20,7 @@ class ImgixService extends BaseApplicationComponent
 {
     protected $builder;
 
-    public function init ()
+    public function init()
     {
         parent::init();
 
@@ -29,21 +29,29 @@ class ImgixService extends BaseApplicationComponent
         $this->builder = new UrlBuilder($imgixDomain);
     }
 
-    public function onSaveAsset (AssetFileModel $asset)
+    public function onSaveAsset(AssetFileModel $asset)
     {
-        craft()->tasks->createTask('Imgix_Purge', 'Purging images', [ 'assetIds' => [ $asset->id ] ]);
+        try {
+            craft()->tasks->createTask('Imgix_Purge', 'Purging images', ['assetIds' => [$asset->id]]);
+        } catch (\Exception $e) {
+            ImgixPlugin::log('Error when creating task: ' . $e->getMessage(), LogLevel::Error);
+        }
     }
 
-    public function onDeleteAsset (AssetFileModel $asset)
+    public function onDeleteAsset(AssetFileModel $asset)
     {
-        craft()->tasks->createTask('Imgix_PurgeUrl', 'Purging images', [ 'urls' => [ $this->getImgixUrl($asset) ] ]);
+        try {
+            craft()->tasks->createTask('Imgix_PurgeUrl', 'Purging images', ['urls' => [$this->getImgixUrl($asset)]]);
+        } catch (\Exception $e) {
+            ImgixPlugin::log('Error when creating task: ' . $e->getMessage(), LogLevel::Error);
+        }
     }
 
     /**
      */
-    public function transformImage ($asset = null, $transforms = null, $defaultOptions = [])
+    public function transformImage($asset = null, $transforms = null, $defaultOptions = [])
     {
-        if ( !$asset ) {
+        if (!$asset) {
             return null;
         }
 
@@ -52,21 +60,23 @@ class ImgixService extends BaseApplicationComponent
         return $pathsModel;
     }
 
-    public function shouldUpdate ($element)
+    public function shouldUpdate($element)
     {
         return $element->getElementType() === 'Asset' && $element->kind === 'image' && ($element->extension !== 'svg' && $element->mimeType !== 'image/svg+xml');
     }
 
-    public function purge (AssetFileModel $asset)
+    public function purge(AssetFileModel $asset)
     {
         $url = $this->getImgixUrl($asset);
 
-        ImgixPlugin::log(Craft::t('Purging asset #{id}: {url}', [ 'id' => $asset->id, 'url' => $url ]));
+        ImgixPlugin::log(Craft::t('Purging asset #{id}: {url}', [
+            'id' => $asset->id, 'url' => $url
+        ], LogLevel::Trace));
 
         return $this->purgeUrl($url);
     }
 
-    public function purgeUrl ($url = null)
+    public function purgeUrl($url = null)
     {
         try {
             $client  = new Client();
@@ -78,22 +88,23 @@ class ImgixService extends BaseApplicationComponent
             $request->setAuth($this->getSetting('apiKey'));
 
             return $request->send();
-        }
-        catch (\Exception $e) {
-            ImgixPlugin::log(Craft::t('Failed to purge {url}', [ 'url' => $url ]), LogLevel::Error);
+        } catch (\Exception $e) {
+            ImgixPlugin::log(Craft::t('Failed to purge {url}', [
+                'url' => $url
+            ]), LogLevel::Error);
 
             return true;
         }
     }
 
-    public function getImgixUrl (AssetFileModel $asset)
+    public function getImgixUrl(AssetFileModel $asset)
     {
         $source       = $asset->source;
         $sourceHandle = $source->handle;
         $domains      = $this->getSetting('imgixDomains');
         $domain       = array_key_exists($sourceHandle, $domains) ? $domains[ $sourceHandle ] : null;
 
-        if ( !$domain ) {
+        if (!$domain) {
             return null;
         }
 
@@ -102,8 +113,13 @@ class ImgixService extends BaseApplicationComponent
         return $builder->createURL($asset->path);
     }
 
-    public function getSetting ($setting)
+    public function getSetting($setting)
     {
         return craft()->config->get($setting, 'imgix');
+    }
+
+    public function isPurgeEnabled()
+    {
+        return !empty($this->getSetting('apiKey'));
     }
 }

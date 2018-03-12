@@ -22,21 +22,23 @@ class ImgixPlugin extends BasePlugin
     {
         require_once __DIR__ . '/vendor/autoload.php';
 
-        craft()->on('elements.onBeforeSaveElement', function (Event $event) {
-            $element = $event->params['element'];
+        if (craft()->imgix->isPurgeEnabled()) {
+            craft()->on('elements.onBeforeSaveElement', function (Event $event) {
+                $element = $event->params['element'];
 
-            if ( !$event->params['isNewElement'] && craft()->imgix->shouldUpdate($element) ) {
-                craft()->imgix->onSaveAsset($event->params['element']);
-            }
-        });
+                if ( !$event->params['isNewElement'] && craft()->imgix->shouldUpdate($element) ) {
+                    craft()->imgix->onSaveAsset($event->params['element']);
+                }
+            });
 
-        craft()->on('assets.onDeleteAsset', function (Event $event) {
-            $asset = $event->params['asset'];
+            craft()->on('assets.onDeleteAsset', function (Event $event) {
+                $asset = $event->params['asset'];
 
-            if ( craft()->imgix->shouldUpdate($asset) ) {
-                craft()->imgix->onDeleteAsset($asset);
-            }
-        });
+                if ( craft()->imgix->shouldUpdate($asset) ) {
+                    craft()->imgix->onDeleteAsset($asset);
+                }
+            });
+        }
     }
 
     /**
@@ -106,7 +108,10 @@ class ImgixPlugin extends BasePlugin
     public function addAssetActions ()
     {
         $actions   = [];
-        $actions[] = 'Imgix_Purge';
+
+        if (craft()->imgix->isPurgeEnabled()) {
+            $actions[] = 'Imgix_Purge';
+        }
 
         return $actions;
     }
