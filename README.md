@@ -1,5 +1,7 @@
 # Imgix plugin for Craft CMS
 
+> This is the Craft 2 version, and is deprecated. The Craft 3+ version is available here: https://github.com/sjelfull/craft3-imgix
+
 Imgix is awesome
 
 ![Screenshot](resources/icon.png)
